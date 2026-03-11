@@ -52,7 +52,11 @@ class LoginController extends GetxController {
     } on DioException catch (e) {
       if (e.error is Failure) {
         final failure = e.error as Failure;
-        error.value = failure.isNoInternet ? 'No Internet Connection' : failure.message;
+        if (failure.isNoInternet) {
+           isLoading.value = false;
+           return;
+        }
+        error.value = failure.message;
       } else {
          error.value = 'Login failed: ${e.message}';
       }
@@ -64,7 +68,11 @@ class LoginController extends GetxController {
       isLoading.value = false;
     }
   }
+  RxBool isPasswordHidden = true.obs;
 
+  void togglePassword() {
+    isPasswordHidden.value = !isPasswordHidden.value;
+  }
   @override
   void onClose() {
     usernameController.dispose();

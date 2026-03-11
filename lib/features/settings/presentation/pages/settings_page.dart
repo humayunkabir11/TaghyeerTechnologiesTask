@@ -29,7 +29,7 @@ class SettingsPage extends StatelessWidget {
             SizedBox(height: 20.h),
             Obx(() =>
                 SwitchListTile(
-                  title: const Text('Dark Mode'),
+                  title: controller.isDarkMode.value?const Text('Dark Mode') : const Text('Light Mode'),
                   value: controller.isDarkMode.value,
                   onChanged: (_) => controller.toggleTheme(),
                 )),

@@ -38,17 +38,21 @@ class AppRetryInterceptor extends Interceptor {
 
     await Future.delayed(delay * retryCount);
 
-    final newReq = await dio.request(
-      err.requestOptions.path,
-      data: err.requestOptions.data,
-      queryParameters: err.requestOptions.queryParameters,
-      options: Options(
-        method: err.requestOptions.method,
-        headers: err.requestOptions.headers,
-        extra: {"retry_count": retryCount},
-      ),
-    );
+    try {
+      final newReq = await dio.request(
+        err.requestOptions.path,
+        data: err.requestOptions.data,
+        queryParameters: err.requestOptions.queryParameters,
+        options: Options(
+          method: err.requestOptions.method,
+          headers: err.requestOptions.headers,
+          extra: {"retry_count": retryCount},
+        ),
+      );
 
-    return handler.resolve(newReq);
+      return handler.resolve(newReq);
+    } on DioException catch (e) {
+      return handler.next(e);
+    }
   }
 }

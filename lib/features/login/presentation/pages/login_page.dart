@@ -66,12 +66,25 @@ class LoginPage extends StatelessWidget{
                         ),
                       ),
                       SizedBox(height: 16.h),
-                      TextField(
-                        controller: controller.passwordController,
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                          labelText: 'Password',
-                          prefixIcon: Icon(Icons.lock_outline),
+                      Obx(
+                            () => TextField(
+                          controller: controller.passwordController,
+                          obscureText: controller.isPasswordHidden.value,
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            prefixIcon: const Icon(Icons.lock_outline),
+
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                controller.isPasswordHidden.value
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                              ),
+                              onPressed: () {
+                                controller.togglePassword();
+                              },
+                            ),
+                          ),
                         ),
                       ),
                       Obx(() =>
@@ -80,7 +93,7 @@ class LoginPage extends StatelessWidget{
                           style: const TextStyle(color: Colors.red))
                           : const SizedBox.shrink()),
                       SizedBox(height: 20.h),
-                      Obx(() =>
+                        Obx(() =>
                           ElevatedButton(
                             onPressed: controller.isLoading.value ? null : () =>
                                 controller.login(),

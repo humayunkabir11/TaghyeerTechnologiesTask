@@ -10,6 +10,8 @@ import 'core/di/init_dependencies.dart';
 import 'core/services/hive_service.dart';
 import 'core/utils/dev_logs.dart';
 
+import 'core/network/global_connection_wrapper.dart';
+
 void main() async {
   await runZonedGuarded<Future<void>>(
     () async {
@@ -55,15 +57,17 @@ class MyApp extends StatelessWidget {
       designSize: const Size(375, 812),
       minTextAdapt: false,
       builder: (context, child) {
-        return GetMaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: AppStrings.appName,
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
-          initialRoute: '/',
-          getPages: AppRoute.pages,
-        );
+          return GlobalConnectionWrapper(
+            child: GetMaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: AppStrings.appName,
+              theme: AppTheme.lightTheme,
+              darkTheme: AppTheme.darkTheme,
+              themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+              initialRoute: '/',
+              getPages: AppRoute.pages,
+            ),
+          );
       },
     );
   }
