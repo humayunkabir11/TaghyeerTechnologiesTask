@@ -21,6 +21,7 @@ class PostDetailPage extends StatelessWidget {
             const Spacer(),
             Text('Reactions: ${post.reactions}'),
             Wrap(
+             spacing: 4,
               children: post.tags.map((tag) => Chip(label: Text(tag))).toList(),
             ),
           ],

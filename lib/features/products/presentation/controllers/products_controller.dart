@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
+import 'package:taghyeer_task/core/error/failures.dart';
 import 'package:taghyeer_task/features/products/domain/repositories/products_repository.dart';
 import 'package:taghyeer_task/features/products/data/models/product_model.dart';
 
@@ -10,7 +11,7 @@ class ProductsController extends GetxController {
   final products = <ProductModel>[].obs;
   final isLoading = false.obs;
   final isPaginationLoading = false.obs;
-  final error = ''.obs;
+  final failure = Rxn<Failure>();
   
   final scrollController = ScrollController();
   int _skip = 0;
@@ -40,7 +41,7 @@ class ProductsController extends GetxController {
     } else {
       isPaginationLoading.value = true;
     }
-    error.value = '';
+    failure.value = null;
 
     try {
       final response = await productsRepository.getProducts(limit: _limit, skip: _skip);
@@ -52,14 +53,19 @@ class ProductsController extends GetxController {
         if (products.length >= response.total) _hasMore = false;
       }
     } on DioException catch (e) {
-      error.value = 'Failed to load products: ${e.message}';
+      if (e.error is Failure) {
+        failure.value = e.error as Failure;
+      } else {
+        failure.value = Failure(message: 'Failed to load products: ${e.message}');
+      }
     } catch (e) {
-      error.value = 'An unexpected error occurred';
+      failure.value = Failure(message: 'An unexpected error occurred');
     } finally {
       isLoading.value = false;
       isPaginationLoading.value = false;
     }
   }
+
 
   @override
   void onClose() {

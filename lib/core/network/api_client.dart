@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'interceptors/log_interceptor.dart';
 import 'interceptors/retry_interceptor.dart';
 import 'interceptors/auth_interceptor.dart';
+import 'interceptors/error_interceptor.dart';
 
 class ApiClient {
   late final Dio dio;
@@ -33,8 +34,10 @@ class ApiClient {
       AppLogInterceptor(),
       AppRetryInterceptor(dio: dio),
       authInterceptor,
+      AppErrorInterceptor(),
     ]);
   }
+
 
   // ----------------------------- GET ----------------------------
   Future<Response> get({

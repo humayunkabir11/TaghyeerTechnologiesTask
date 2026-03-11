@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:taghyeer_task/features/posts/presentation/controllers/posts_controller.dart';
-import 'package:taghyeer_task/features/posts/data/models/post_model.dart';
+
 import 'package:taghyeer_task/features/posts/presentation/pages/post_detail_page.dart';
 
 class PostsPage extends GetView<PostsController> {
@@ -11,14 +11,62 @@ class PostsPage extends GetView<PostsController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Posts')),
+      appBar: AppBar(
+        title: const Text('Posts'),
+        centerTitle: true,
+      ),
       body: Obx(() {
-        if (controller.isLoading.value && controller.posts.isEmpty) {
+        if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (controller.error.value.isNotEmpty && controller.posts.isEmpty) {
-          return Center(child: Text(controller.error.value));
+
+        if (controller.failure.value != null && controller.posts.isEmpty) {
+          final failure = controller.failure.value!;
+          
+           // Show toast message if there is a failure and we have no data
+            if (failure.isNoInternet) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                 Fluttertoast.showToast(msg: "No Internet Connection");
+                });
+            } else {
+               WidgetsBinding.instance.addPostFrameCallback((_) {
+                 Fluttertoast.showToast(msg: failure.message);
+                });
+            }
+            
+          return Center(
+             child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.wifi_off, size: 60, color: Colors.grey),
+                  const SizedBox(height: 10),
+                  Text(
+                    failure.isNoInternet ? "No Internet Connection" : failure.message,
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () => controller.getPosts(),
+                    child: const Text("Retry"),
+                  )
+                ],
+              ),
+          );
         }
+
+         // Handle empty state
+         if (controller.posts.isEmpty) {
+            return const Center(
+                child: Text(
+                    "No Data Found",
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                    ),
+                ),
+            );
+         }
+
         return ListView.builder(
           controller: controller.scrollController,
           itemCount: controller.posts.length + (controller.isPaginationLoading.value ? 1 : 0),
@@ -27,11 +75,18 @@ class PostsPage extends GetView<PostsController> {
               return const Center(child: CircularProgressIndicator());
             }
             final post = controller.posts[index];
-            return ListTile(
-              title: Text(post.title),
-              subtitle: Text(post.body, maxLines: 2, overflow: TextOverflow.ellipsis),
-              trailing: Text('#${post.id}'),
-              onTap: () => Get.to(() => PostDetailPage(post: post)),
+            return Card(
+              elevation: 1,
+              child: Column(
+                children: [
+                  ListTile(
+                    title: Text(post.title),
+                    subtitle: Text(post.body, maxLines: 2, overflow: TextOverflow.ellipsis),
+                    trailing: Text('#${post.id}'),
+                    onTap: () => Get.to(() => PostDetailPage(post: post)),
+                  )
+                ],
+              ),
             );
           },
         );
@@ -39,3 +94,5 @@ class PostsPage extends GetView<PostsController> {
     );
   }
 }
+
+

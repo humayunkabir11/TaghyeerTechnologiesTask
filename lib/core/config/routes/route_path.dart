@@ -12,18 +12,6 @@ class RoutePath {
   static const String mainPage = '/mainPage';
   static const String mainPagePath = '/mainPagePath';
 
-
-  ///attendance page
-  static const String cartPage = '/cartPage';
-  static const String cartPagePath = '/cartPage';
-
-  ///chat page
-  static const String chatPage = '/chatPage';
-  static const String chatPagePath = '/chatPagePath';
-
-  ///message page
-  static const String messagePage = '/messagePage';
-  static const String messagePagePath = '/messagePagePath';
   // ── Profile ───────────────────────────────────────────────────────────
   /// Profile screen
   static const String profilePage = '/profile';

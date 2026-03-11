@@ -11,7 +11,7 @@ class ProductDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(product.title)),
+      appBar: AppBar(title: Text("Product Details"),centerTitle: true,),
       body: SingleChildScrollView(
         child: Column(
           children: [

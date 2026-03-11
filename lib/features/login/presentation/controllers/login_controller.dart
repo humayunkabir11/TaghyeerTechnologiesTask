@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:dio/dio.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:taghyeer_task/core/error/failures.dart';
 import '../../../../core/services/hive_service.dart';
 import 'package:taghyeer_task/features/login/domain/repositories/auth_repository.dart';
-import 'package:taghyeer_task/features/login/data/models/user_model.dart';
 
 class LoginController extends GetxController {
   final AuthRepository authRepository;
@@ -47,8 +49,17 @@ class LoginController extends GetxController {
       );
       await hiveService.saveUser(user);
       Get.offAllNamed('/main');
+    } on DioException catch (e) {
+      if (e.error is Failure) {
+        final failure = e.error as Failure;
+        error.value = failure.isNoInternet ? 'No Internet Connection' : failure.message;
+      } else {
+         error.value = 'Login failed: ${e.message}';
+      }
+      Fluttertoast.showToast(msg: error.value);
     } catch (e) {
       error.value = 'Login failed. Please check your credentials.';
+      Fluttertoast.showToast(msg: error.value);
     } finally {
       isLoading.value = false;
     }
@@ -61,3 +72,4 @@ class LoginController extends GetxController {
     super.onClose();
   }
 }
+
