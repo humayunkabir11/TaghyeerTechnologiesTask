@@ -20,39 +20,7 @@ class PostsPage extends GetView<PostsController> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (controller.failure.value != null && controller.posts.isEmpty) {
-          final failure = controller.failure.value!;
-          
-           // Show toast message if there is a failure and we have no data
-            if (failure.isNoInternet) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                 Fluttertoast.showToast(msg: "No Internet Connection");
-                });
-            } else {
-               WidgetsBinding.instance.addPostFrameCallback((_) {
-                 Fluttertoast.showToast(msg: failure.message);
-                });
-            }
-            
-          return Center(
-             child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.wifi_off, size: 60, color: Colors.grey),
-                  const SizedBox(height: 10),
-                  Text(
-                    failure.isNoInternet ? "No Internet Connection" : failure.message,
-                    style: const TextStyle(color: Colors.grey),
-                  ),
-                  const SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () => controller.getPosts(),
-                    child: const Text("Retry"),
-                  )
-                ],
-              ),
-          );
-        }
+
 
          // Handle empty state
          if (controller.posts.isEmpty) {
