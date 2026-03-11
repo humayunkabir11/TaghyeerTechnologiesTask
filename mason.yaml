@@ -1,0 +1,5 @@
+bricks:
+  humayun_feature:
+    git:
+      url: "https://github.com/humayunkabir11/humayun_bricks.git"
+      path: humayun_feature
