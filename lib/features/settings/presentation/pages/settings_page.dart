@@ -27,6 +27,8 @@ class SettingsPage extends StatelessWidget {
               );
             }),
             SizedBox(height: 20.h),
+
+            /// ------------------------  switchListTile
             Obx(() =>
                 SwitchListTile(
                   title: controller.isDarkMode.value?const Text('Dark Mode') : const Text('Light Mode'),
@@ -34,6 +36,7 @@ class SettingsPage extends StatelessWidget {
                   onChanged: (_) => controller.toggleTheme(),
                 )),
             const Divider(),
+            /// ----------------------------- Logout button
             ListTile(
               leading: const Icon(Icons.logout, color: Colors.red),
               title: const Text('Logout', style: TextStyle(color: Colors.red)),

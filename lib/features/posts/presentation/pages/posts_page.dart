@@ -22,7 +22,7 @@ class PostsPage extends GetView<PostsController> {
 
 
 
-         // Handle empty state
+         ///-----------------  Handle empty state
          if (controller.posts.isEmpty) {
             return const Center(
                 child: Text(
@@ -34,7 +34,7 @@ class PostsPage extends GetView<PostsController> {
                 ),
             );
          }
-
+///---------------------- post list
         return ListView.builder(
           controller: controller.scrollController,
           itemCount: controller.posts.length + (controller.isPaginationLoading.value ? 1 : 0),

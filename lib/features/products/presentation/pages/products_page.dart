@@ -22,7 +22,7 @@ class ProductsPage extends StatelessWidget {
           }
 
           
-           // Handle empty state
+           ///------------------------- Handle empty state
            if (controller.products.isEmpty) {
               return const Center(
                   child: Text(
@@ -35,7 +35,7 @@ class ProductsPage extends StatelessWidget {
               );
            }
 
-
+    ///- ----------------------- product list
           return GridView.builder(
             controller: controller.scrollController,
             padding: EdgeInsets.all(16.w),
@@ -52,6 +52,7 @@ class ProductsPage extends StatelessWidget {
                 return const Center(child: CircularProgressIndicator());
               }
               final product = controller.products[index];
+              ///---------------- product card
               return ProductCard(
                 product: product,
                 onTap: () => Get.to(() => ProductDetailPage(product: product)),

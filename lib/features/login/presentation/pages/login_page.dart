@@ -30,10 +30,11 @@ class LoginPage extends StatelessWidget{
           child: SafeArea(
             child: Column(
               children: [
-                SizedBox(height: 60.h),
+                SizedBox(height:50.h),
                 Icon(Icons.lock_person_rounded, size: 80.sp,
                     color: Colors.white),
                 SizedBox(height: 16.h),
+
                 Text(
                   'Welcome Back',
                   style: TextStyle(
@@ -47,9 +48,7 @@ class LoginPage extends StatelessWidget{
                 Container(
                   padding: EdgeInsets.all(24.w),
                   decoration: BoxDecoration(
-                    color: Theme
-                        .of(context)
-                        .scaffoldBackgroundColor,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(30.r),
                       topRight: Radius.circular(30.r),
@@ -58,6 +57,7 @@ class LoginPage extends StatelessWidget{
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      /// ---------------- User text field
                       TextField(
                         controller: controller.usernameController,
                         decoration: const InputDecoration(
@@ -66,6 +66,8 @@ class LoginPage extends StatelessWidget{
                         ),
                       ),
                       SizedBox(height: 16.h),
+
+                      ///--------------- password field
                       Obx(
                             () => TextField(
                           controller: controller.passwordController,
