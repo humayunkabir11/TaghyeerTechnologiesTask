@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:dio/dio.dart';
 import 'package:taghyeer_task/core/error/failures.dart';
-import 'package:taghyeer_task/features/posts/domain/repositories/posts_repository.dart';
-import 'package:taghyeer_task/features/posts/data/models/post_model.dart';
+
+import '../../domain/entities/post_entity.dart';
+import '../../domain/usecase/get_posts_usecase.dart';
+
 
 class PostsController extends GetxController {
-  final PostsRepository postsRepository;
+  final GetPostsUseCase getPostsUseCase;
   
-  final posts = <PostModel>[].obs;
+  final posts = <PostEntity>[].obs;
   final isLoading = false.obs;
   final isPaginationLoading = false.obs;
   final failure = Rxn<Failure>();
@@ -18,7 +19,7 @@ class PostsController extends GetxController {
   final int _limit = 10;
   bool _hasMore = true;
 
-  PostsController(this.postsRepository);
+  PostsController(this.getPostsUseCase);
 
   @override
   void onInit() {
@@ -44,20 +45,24 @@ class PostsController extends GetxController {
     failure.value = null;
 
     try {
-      final response = await postsRepository.getPosts(limit: _limit, skip: _skip);
-      if (response.posts.isEmpty) {
-        _hasMore = false;
-      } else {
-        posts.addAll(response.posts);
-        _skip += _limit;
-        if (posts.length >= response.total) _hasMore = false;
-      }
-    } on DioException catch (e) {
-      if (e.error is Failure) {
-        failure.value = e.error as Failure;
-      } else {
-        failure.value = Failure(message: 'Failed to load posts: ${e.message}');
-      }
+      final result = await getPostsUseCase.call(
+        GetPostsParams(limit: _limit, skip: _skip),
+      );
+
+      result.fold(
+        (l) {
+          failure.value = l;
+        },
+        (r) {
+          if ((r.posts ?? []).isEmpty) {
+            _hasMore = false;
+          } else {
+            posts.addAll(r.posts ?? []);
+            _skip += _limit;
+            if (posts.length >= (r.total ?? 0)) _hasMore = false;
+          }
+        },
+      );
     } catch (e) {
       failure.value = Failure(message: 'An unexpected error occurred');
     } finally {

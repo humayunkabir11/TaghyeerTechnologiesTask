@@ -99,7 +99,7 @@ class _GlobalConnectionWrapperState extends State<GlobalConnectionWrapper> {
                             'Please check your network settings and try again.',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                              color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                               fontSize: 16,
                               fontWeight: FontWeight.normal,
                               height: 1.4,

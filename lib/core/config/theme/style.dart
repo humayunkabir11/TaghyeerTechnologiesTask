@@ -1,2 +1,1 @@
-import 'package:flutter/material.dart';
-
+// This file is empty and has no purpose yet.

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../color/app_colors.dart';
 
 class AppTheme {
   // Brand color
@@ -16,8 +15,7 @@ class AppTheme {
     colorScheme: ColorScheme.fromSeed(
       seedColor: primaryBlue,
       brightness: Brightness.light,
-      surface: Colors.white,
-      background: lightBg,
+      surface: lightBg,
     ),
     scaffoldBackgroundColor: lightBg,
     fontFamily: 'Inter',
@@ -69,8 +67,7 @@ class AppTheme {
     colorScheme: ColorScheme.fromSeed(
       seedColor: primaryBlue,
       brightness: Brightness.dark,
-      surface: cardDark,
-      background: darkBg,
+      surface: darkBg,
     ),
     scaffoldBackgroundColor: darkBg,
     fontFamily: 'Inter',

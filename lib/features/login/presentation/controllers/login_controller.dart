@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:dio/dio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:taghyeer_task/core/error/failures.dart';
 import '../../../../core/services/hive_service.dart';
-import 'package:taghyeer_task/features/login/domain/repositories/auth_repository.dart';
+import '../../domain/usecase/login_usecase.dart';
+import '../../data/models/user_model.dart';
 
 class LoginController extends GetxController {
-  final AuthRepository authRepository;
+  final LoginUseCase loginUseCase;
   final HiveService hiveService;
 
   final usernameController = TextEditingController(text: "emilys");
@@ -16,7 +15,7 @@ class LoginController extends GetxController {
   final isLoading = false.obs;
   final error = ''.obs;
 
-  LoginController(this.authRepository, this.hiveService);
+  LoginController(this.loginUseCase, this.hiveService);
 
   @override
   void onInit() {
@@ -43,24 +42,30 @@ class LoginController extends GetxController {
     error.value = '';
 
     try {
-      final user = await authRepository.login(
-        usernameController.text.trim(),
-        passwordController.text.trim(),
+      final result = await loginUseCase.call(
+        LoginParams(
+          username: usernameController.text.trim(),
+          password: passwordController.text.trim(),
+        ),
       );
-      await hiveService.saveUser(user);
-      Get.offAllNamed('/main');
-    } on DioException catch (e) {
-      if (e.error is Failure) {
-        final failure = e.error as Failure;
-        if (failure.isNoInternet) {
-           isLoading.value = false;
-           return;
-        }
-        error.value = failure.message;
-      } else {
-         error.value = 'Login failed: ${e.message}';
-      }
-      Fluttertoast.showToast(msg: error.value);
+
+      result.fold(
+        (l) {
+          if (l.isNoInternet) {
+            // Already handled in ApiClient probably, but we can set loading false here
+            isLoading.value = false;
+          } else {
+            error.value = l.message;
+            Fluttertoast.showToast(msg: error.value);
+          }
+        },
+        (r) async {
+          if (r is UserModel) {
+            await hiveService.saveUser(r);
+          }
+          Get.offAllNamed('/main');
+        },
+      );
     } catch (e) {
       error.value = 'Login failed. Please check your credentials.';
       Fluttertoast.showToast(msg: error.value);

@@ -1,18 +1,13 @@
-class ProductModel {
-  final int id;
-  final String title;
-  final String description;
-  final double price;
-  final String thumbnail;
-  final List<String> images;
+import '../../domain/entities/product_entity.dart';
 
+class ProductModel extends ProductEntity {
   ProductModel({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.price,
-    required this.thumbnail,
-    required this.images,
+    super.id,
+    super.title,
+    super.description,
+    super.price,
+    super.thumbnail,
+    super.images,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -20,29 +15,26 @@ class ProductModel {
       id: json['id'],
       title: json['title'],
       description: json['description'],
-      price: (json['price'] as num).toDouble(),
+      price: json['price'] != null ? (json['price'] as num).toDouble() : null,
       thumbnail: json['thumbnail'],
-      images: List<String>.from(json['images'] ?? []),
+      images: json['images'] != null ? List<String>.from(json['images']) : null,
     );
   }
 }
 
-class ProductResponse {
-  final List<ProductModel> products;
-  final int total;
-  final int skip;
-  final int limit;
-
+class ProductResponse extends ProductResponseEntity {
   ProductResponse({
-    required this.products,
-    required this.total,
-    required this.skip,
-    required this.limit,
-  });
+    List<ProductModel>? products,
+    super.total,
+    super.skip,
+    super.limit,
+  }) : super(products: products);
 
   factory ProductResponse.fromJson(Map<String, dynamic> json) {
     return ProductResponse(
-      products: (json['products'] as List).map((i) => ProductModel.fromJson(i)).toList(),
+      products: json['products'] != null
+          ? (json['products'] as List).map((i) => ProductModel.fromJson(i)).toList()
+          : null,
       total: json['total'],
       skip: json['skip'],
       limit: json['limit'],

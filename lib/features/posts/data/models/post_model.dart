@@ -1,23 +1,18 @@
-class PostModel {
-  final int id;
-  final String title;
-  final String body;
-  final List<String> tags;
-  final int reactions;
+import '../../domain/entities/post_entity.dart';
 
+class PostModel extends PostEntity {
   PostModel({
-    required this.id,
-    required this.title,
-    required this.body,
-    required this.tags,
-    required this.reactions,
+    super.id,
+    super.title,
+    super.body,
+    super.tags,
+    super.reactions,
   });
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
-    // Reactions can be object or int depending on API version
-    int reactionCount = 0;
+    int? reactionCount;
     if (json['reactions'] is Map) {
-      reactionCount = (json['reactions']['likes'] ?? 0);
+      reactionCount = (json['reactions']['likes']);
     } else if (json['reactions'] is int) {
       reactionCount = json['reactions'];
     }
@@ -26,28 +21,25 @@ class PostModel {
       id: json['id'],
       title: json['title'],
       body: json['body'],
-      tags: List<String>.from(json['tags'] ?? []),
+      tags: json['tags'] != null ? List<String>.from(json['tags']) : null,
       reactions: reactionCount,
     );
   }
 }
 
-class PostResponse {
-  final List<PostModel> posts;
-  final int total;
-  final int skip;
-  final int limit;
-
+class PostResponse extends PostResponseEntity {
   PostResponse({
-    required this.posts,
-    required this.total,
-    required this.skip,
-    required this.limit,
-  });
+    List<PostModel>? posts,
+    super.total,
+    super.skip,
+    super.limit,
+  }) : super(posts: posts);
 
   factory PostResponse.fromJson(Map<String, dynamic> json) {
     return PostResponse(
-      posts: (json['posts'] as List).map((i) => PostModel.fromJson(i)).toList(),
+      posts: json['posts'] != null
+          ? (json['posts'] as List).map((i) => PostModel.fromJson(i)).toList()
+          : null,
       total: json['total'],
       skip: json['skip'],
       limit: json['limit'],

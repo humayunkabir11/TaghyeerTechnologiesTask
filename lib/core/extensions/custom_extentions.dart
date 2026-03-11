@@ -14,9 +14,9 @@ extension NumberParsing on String {
 
 extension TextExtensions on String {
   String get capitalizeFirstLetter {
-    if (this.isEmpty) return this;
+    if (isEmpty) return this;
 
-    return this[0].toUpperCase() + this.substring(1);
+    return this[0].toUpperCase() + substring(1);
   }
 }
 

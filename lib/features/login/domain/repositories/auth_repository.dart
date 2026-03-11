@@ -1,6 +1,6 @@
 
-import 'package:taghyeer_task/features/login/data/models/user_model.dart';
+import '../entities/user_entity.dart';
 
 abstract class AuthRepository {
-  Future<UserModel> login(String username, String password);
+  Future<UserEntity> login(String username, String password);
 }

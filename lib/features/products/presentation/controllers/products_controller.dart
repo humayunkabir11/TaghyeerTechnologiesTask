@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:dio/dio.dart';
 import 'package:taghyeer_task/core/error/failures.dart';
-import 'package:taghyeer_task/features/products/domain/repositories/products_repository.dart';
-import 'package:taghyeer_task/features/products/data/models/product_model.dart';
+
+import '../../domain/entities/product_entity.dart';
+import '../../domain/usecase/get_products_usecase.dart';
+
 
 class ProductsController extends GetxController {
-  final ProductsRepository productsRepository;
+  final GetProductsUseCase getProductsUseCase;
   
-  final products = <ProductModel>[].obs;
+  final products = <ProductEntity>[].obs;
   final isLoading = false.obs;
   final isPaginationLoading = false.obs;
   final failure = Rxn<Failure>();
@@ -18,7 +19,7 @@ class ProductsController extends GetxController {
   final int _limit = 10;
   bool _hasMore = true;
 
-  ProductsController(this.productsRepository);
+  ProductsController(this.getProductsUseCase);
 
   @override
   void onInit() {
@@ -44,20 +45,24 @@ class ProductsController extends GetxController {
     failure.value = null;
 
     try {
-      final response = await productsRepository.getProducts(limit: _limit, skip: _skip);
-      if (response.products.isEmpty) {
-        _hasMore = false;
-      } else {
-        products.addAll(response.products);
-        _skip += _limit;
-        if (products.length >= response.total) _hasMore = false;
-      }
-    } on DioException catch (e) {
-      if (e.error is Failure) {
-        failure.value = e.error as Failure;
-      } else {
-        failure.value = Failure(message: 'Failed to load products: ${e.message}');
-      }
+      final result = await getProductsUseCase.call(
+        GetProductsParams(limit: _limit, skip: _skip),
+      );
+
+      result.fold(
+        (l) {
+          failure.value = l;
+        },
+        (r) {
+          if ((r.products ?? []).isEmpty) {
+            _hasMore = false;
+          } else {
+            products.addAll(r.products ?? []);
+            _skip += _limit;
+            if (products.length >= (r.total ?? 0)) _hasMore = false;
+          }
+        },
+      );
     } catch (e) {
       failure.value = Failure(message: 'An unexpected error occurred');
     } finally {

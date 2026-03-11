@@ -1,6 +1,6 @@
 
-import 'package:taghyeer_task/features/posts/data/models/post_model.dart';
+import '../entities/post_entity.dart';
 
 abstract class PostsRepository {
-  Future<PostResponse> getPosts({int limit = 10, int skip = 0});
+  Future<PostResponseEntity> getPosts({int limit = 10, int skip = 0});
 }

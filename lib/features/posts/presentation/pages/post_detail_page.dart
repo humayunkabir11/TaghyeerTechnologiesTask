@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:taghyeer_task/features/posts/data/models/post_model.dart';
+import '../../domain/entities/post_entity.dart';
+
 
 class PostDetailPage extends StatelessWidget {
-  final PostModel post;
+  final PostEntity post;
   const PostDetailPage({super.key, required this.post});
 
   @override
@@ -15,14 +16,14 @@ class PostDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(post.title, style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold)),
+            Text(post.title ?? '', style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold)),
             SizedBox(height: 10.h),
-            Text(post.body, style: TextStyle(fontSize: 16.sp, height: 1.5)),
+            Text(post.body ?? '', style: TextStyle(fontSize: 16.sp, height: 1.5)),
             const Spacer(),
-            Text('Reactions: ${post.reactions}'),
+            Text('Reactions: ${post.reactions ?? 0}'),
             Wrap(
              spacing: 4,
-              children: post.tags.map((tag) => Chip(label: Text(tag))).toList(),
+              children: (post.tags ?? []).map((tag) => Chip(label: Text(tag))).toList(),
             ),
           ],
         ),

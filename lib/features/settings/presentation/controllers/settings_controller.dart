@@ -1,28 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:taghyeer_task/core/services/hive_service.dart';
-import 'package:taghyeer_task/features/login/data/models/user_model.dart';
-import 'package:taghyeer_task/core/network/api_client.dart';
+import '../../../../core/usecase/usecase.dart';
+import '../../../login/domain/entities/user_entity.dart';
+import '../../domain/usecase/logout_usecase.dart';
+import '../../domain/usecase/toggle_theme_usecase.dart';
+import '../../domain/repositories/settings_repository.dart';
+
 
 class SettingsController extends GetxController {
-  final HiveService hiveService;
-  final ApiClient apiClient;
+  final LogoutUseCase logoutUseCase;
+  final ToggleThemeUseCase toggleThemeUseCase;
+  final SettingsRepository settingsRepository;
 
   final isDarkMode = false.obs;
-  final user = Rxn<UserModel>();
+  final user = Rxn<UserEntity>();
 
-  SettingsController(this.hiveService, this.apiClient);
+  SettingsController(
+    this.logoutUseCase,
+    this.toggleThemeUseCase,
+    this.settingsRepository,
+  );
+
+
 
   @override
   void onInit() {
     super.onInit();
-    isDarkMode.value = hiveService.isDarkMode();
-    user.value = hiveService.getUser();
+    isDarkMode.value = settingsRepository.isDarkMode();
+    user.value = settingsRepository.getUser();
   }
 
-  void toggleTheme() {
+  Future<void> toggleTheme() async {
     isDarkMode.toggle();
-    hiveService.saveThemeMode(isDarkMode.value);
+    await toggleThemeUseCase.call(isDarkMode.value);
     Get.changeThemeMode(isDarkMode.value ? ThemeMode.dark : ThemeMode.light);
   }
 
@@ -36,7 +46,7 @@ class SettingsController extends GetxController {
           TextButton(
             onPressed: () async {
               Get.back();
-              await hiveService.clearUser();
+              await logoutUseCase.call(const NoParams());
               Get.offAllNamed('/');
             },
             child: const Text('Logout', style: TextStyle(color: Colors.red)),

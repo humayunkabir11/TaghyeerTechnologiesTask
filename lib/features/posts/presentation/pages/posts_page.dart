@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:taghyeer_task/features/posts/presentation/controllers/posts_controller.dart';
 
 import 'package:taghyeer_task/features/posts/presentation/pages/post_detail_page.dart';
@@ -36,6 +35,7 @@ class PostsPage extends GetView<PostsController> {
          }
 ///---------------------- post list
         return ListView.builder(
+          padding: EdgeInsets.symmetric(horizontal: 8),
           controller: controller.scrollController,
           itemCount: controller.posts.length + (controller.isPaginationLoading.value ? 1 : 0),
           itemBuilder: (context, index) {
@@ -48,9 +48,9 @@ class PostsPage extends GetView<PostsController> {
               child: Column(
                 children: [
                   ListTile(
-                    title: Text(post.title),
-                    subtitle: Text(post.body, maxLines: 2, overflow: TextOverflow.ellipsis),
-                    trailing: Text('#${post.id}'),
+                    title: Text(post.title ?? ''),
+                    subtitle: Text(post.body ?? '', maxLines: 2, overflow: TextOverflow.ellipsis),
+                    trailing: Text('#${post.id ?? 0}'),
                     onTap: () => Get.to(() => PostDetailPage(post: post)),
                   )
                 ],

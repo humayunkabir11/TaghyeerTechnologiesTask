@@ -20,9 +20,9 @@ class SettingsPage extends StatelessWidget {
               return Card(
                 child: ListTile(
                   leading: CircleAvatar(backgroundImage: NetworkImage(user
-                      .image)),
+                      .image ?? '')),
                   title: Text(user.fullName),
-                  subtitle: Text(user.email),
+                  subtitle: Text(user.email ?? ''),
                 ),
               );
             }),

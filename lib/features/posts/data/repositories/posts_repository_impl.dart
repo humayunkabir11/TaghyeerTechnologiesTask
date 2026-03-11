@@ -1,17 +1,16 @@
-import 'package:taghyeer_task/core/network/api_client.dart';
-import 'package:taghyeer_task/features/posts/domain/repositories/posts_repository.dart';
-import 'package:taghyeer_task/features/posts/data/models/post_model.dart';
+import '../datasources/posts_remote_data_source.dart';
+import '../../domain/repositories/posts_repository.dart';
+import '../../domain/entities/post_entity.dart';
+import '../models/post_model.dart';
 
 class PostsRepositoryImpl implements PostsRepository {
-  final ApiClient apiClient;
-  PostsRepositoryImpl(this.apiClient);
+  final PostsRemoteDataSource remoteDataSource;
+
+  PostsRepositoryImpl(this.remoteDataSource);
 
   @override
-  Future<PostResponse> getPosts({int limit = 10, int skip = 0}) async {
-    final response = await apiClient.get(
-      api: '/posts',
-      params: {'limit': limit, 'skip': skip},
-    );
-    return PostResponse.fromJson(response.data);
+  Future<PostResponseEntity> getPosts({int limit = 10, int skip = 0}) async {
+    final responseData = await remoteDataSource.getPosts(limit: limit, skip: skip);
+    return PostResponse.fromJson(responseData);
   }
 }

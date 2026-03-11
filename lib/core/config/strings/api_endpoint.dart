@@ -11,9 +11,10 @@ class ApiEndpoint {
 
   ///--------------------------auth apis
   static String login = "auth/login".baseUrl;
-  ///--------------------------user apis
-  static String users = "users";
+
   ///--------------------------product apis
-  static String products = "products";
+  static String products = "/products".baseUrl;
+  ///--------------------------post apis
+  static String posts = "posts".baseUrl;
 
 }

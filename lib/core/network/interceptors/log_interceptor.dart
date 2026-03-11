@@ -79,7 +79,7 @@ class AppLogInterceptor extends Interceptor {
 
     debugPrint("\x1B[31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1B[0m");
 
-    final message = extractMessage(err.response?.data);
+    extractMessage(err.response?.data);
 
 
     super.onError(err, handler);

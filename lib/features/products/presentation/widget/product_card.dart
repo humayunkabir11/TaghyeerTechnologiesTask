@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../data/models/product_model.dart';
+import '../../domain/entities/product_entity.dart';
 
 class ProductCard extends StatelessWidget {
-  final ProductModel product;
+  final ProductEntity product;
   final VoidCallback? onTap;
 
   const ProductCard({
@@ -39,7 +39,7 @@ class ProductCard extends StatelessWidget {
             Expanded(
               child: Center(
                 child: CachedNetworkImage(
-                  imageUrl: product.thumbnail,
+                  imageUrl: product.thumbnail ?? '',
                   height: 120.h,
                   width: 120.w,
                   fit: BoxFit.contain,
@@ -49,11 +49,9 @@ class ProductCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-
-
             // Title
             Text(
-              product.title,
+              product.title ?? '',
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -65,7 +63,7 @@ class ProductCard extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  '\$${product.price}',
+                  '\$${product.price ?? 0.0}',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: theme.primaryColor,
